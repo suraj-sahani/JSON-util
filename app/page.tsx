@@ -1,6 +1,7 @@
 "use client";
 import { JsonInputPanel } from "@/components/json-panel/json-input";
 import { JsonOutputPanel } from "@/components/json-panel/json-output";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { INDENT_OPTIONS, SAMPLE_JSON } from "@/lib/constants";
@@ -26,6 +27,7 @@ export default function Home() {
       return { data: undefined, error: (e as Error).message };
     }
   }, [input]);
+
   return (
     <div className="flex h-screen flex-col bg-background">
       <header className="flex items-center justify-between border-b px-6 py-2.5">
@@ -106,6 +108,7 @@ export default function Home() {
               strokeWidth={1.5}
             />
           </Button>
+          <ThemeToggle />
         </div>
       </header>
       <main className="flex flex-1 gap-3 overflow-hidden p-3">
