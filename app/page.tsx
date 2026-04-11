@@ -1,63 +1,119 @@
-import Image from "next/image";
+"use client";
+import { JsonInputPanel } from "@/components/json-panel/json-input";
+import { JsonOutputPanel } from "@/components/json-panel/json-output";
+import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { INDENT_OPTIONS, SAMPLE_JSON } from "@/lib/constants";
+import {
+  ArrowShrink01Icon,
+  Delete02Icon,
+  Download01Icon,
+  MagicWand01Icon,
+  ThirdBracketSquareIcon,
+  Upload01Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useState, useMemo } from "react";
 
 export default function Home() {
+  const [input, setInput] = useState(SAMPLE_JSON);
+
+  const { data, error } = useMemo(() => {
+    if (!input.trim()) return { data: undefined, error: null };
+    try {
+      return { data: JSON.parse(input), error: null };
+    } catch (e) {
+      return { data: undefined, error: (e as Error).message };
+    }
+  }, [input]);
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="flex h-screen flex-col bg-background">
+      <header className="flex items-center justify-between border-b px-6 py-2.5">
+        <div className="flex items-center gap-2">
+          <HugeiconsIcon
+            icon={ThirdBracketSquareIcon}
+            size={24}
+            color="currentColor"
+            strokeWidth={1.5}
+            className="h-5 w-5 text-primary"
+          />
+
+          <h1 className="text-sm font-semibold text-foreground">
+            JSON Formatter
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+          <span className="text-xs text-muted-foreground ml-1">
+            — paste, format, explore
+          </span>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-1">
+          {/* Indent Group */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">Indent</span>
+            <ToggleGroup variant={"outline"} size={"sm"}>
+              {INDENT_OPTIONS.map((option) => (
+                <ToggleGroupItem key={option} value={option.toString()}>
+                  {option}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </div>
+
+          <Button size={"sm"}>
+            <HugeiconsIcon
+              icon={MagicWand01Icon}
+              size={24}
+              color="currentColor"
+              strokeWidth={1.5}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Format
+          </Button>
+
+          <Button size={"sm"} variant={"ghost"}>
+            <HugeiconsIcon
+              icon={ArrowShrink01Icon}
+              size={24}
+              color="currentColor"
+              strokeWidth={1.5}
+            />
+            Minify
+          </Button>
+
+          <Button size={"icon-sm"} variant={"ghost"}>
+            <HugeiconsIcon
+              icon={Upload01Icon}
+              size={24}
+              color="currentColor"
+              strokeWidth={1.5}
+            />
+          </Button>
+
+          <Button size={"icon-sm"} variant={"ghost"}>
+            <HugeiconsIcon
+              icon={Download01Icon}
+              size={24}
+              color="currentColor"
+              strokeWidth={1.5}
+            />
+          </Button>
+
+          <Button size={"icon-sm"} variant={"ghost"}>
+            <HugeiconsIcon
+              icon={Delete02Icon}
+              size={24}
+              color="currentColor"
+              strokeWidth={1.5}
+            />
+          </Button>
+        </div>
+      </header>
+      <main className="flex flex-1 gap-3 overflow-hidden p-3">
+        <div className="flex-1 min-w-0">
+          <JsonInputPanel value={input} onChange={setInput} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <JsonOutputPanel data={data} error={error} />
         </div>
       </main>
     </div>
