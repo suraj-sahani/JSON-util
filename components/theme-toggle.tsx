@@ -1,7 +1,5 @@
 "use client";
 
-import * as React from "react";
-
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
@@ -11,8 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { Moon02Icon, Sun02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 
 export function ThemeToggle() {
   const { setTheme } = useTheme();
