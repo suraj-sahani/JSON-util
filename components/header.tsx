@@ -29,6 +29,7 @@ export default function Header() {
       if (!input) return;
       const json = JSON.parse(input);
       const indentedJSON = JSON.stringify(json, null, indent);
+      setError(null);
       setOutput(JSON.parse(indentedJSON));
     } catch (e) {
       setError((e as Error).message);
