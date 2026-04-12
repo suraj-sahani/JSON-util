@@ -56,6 +56,13 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
   const closeBracket = isArray ? "]" : "}";
   const itemCount = entries.length;
 
+  const entryLineOffsets: number[] = [];
+  let runningLineTotal = startLine + 1;
+  entries.forEach(([, val]) => {
+    entryLineOffsets.push(runningLineTotal);
+    runningLineTotal += countJsonLines(val);
+  });
+
   if (itemCount === 0) {
     return (
       <div className="leading-5">
@@ -100,13 +107,11 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
     );
   }
 
-  let currentLine = startLine + 1;
-
   return (
     <div>
       <div className="flex items-center gap-0.5 leading-5">
         <Button
-          value={"ghost"}
+          variant={"ghost"}
           size={"icon-xs"}
           onClick={() => setCollapsed(true)}
           className="inline-flex items-center bg-transparent rounded p-0.5 hover:bg-accent"
@@ -122,11 +127,14 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
         <KeyPrefix keyName={keyName} searchQuery={searchQuery} />
         <span className="text-json-bracket">{openBracket}</span>
       </div>
-      <div style={{ paddingLeft: `${indent}ch` }}>
+      <div
+        className="relative border-l-2 border-muted-foreground/10 hover:border-muted-foreground/20 transition-colors ml-2"
+        style={{
+          paddingLeft: `${indent}ch`,
+        }}
+      >
         {entries.map(([key, val], idx) => {
-          const childStartLine = currentLine;
-          const childLineCount = countJsonLines(val);
-          currentLine += childLineCount;
+          const childStartLine = entryLineOffsets[idx];
           const isLast = idx === entries.length - 1;
           return (
             <JsonNode

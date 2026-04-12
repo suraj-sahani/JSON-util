@@ -66,9 +66,7 @@ export default function Header() {
           className="h-5 w-5 text-primary"
         />
 
-        <h1 className="text-sm font-semibold text-foreground">
-          JSON Formatter
-        </h1>
+        <h1 className="text-sm font-semibold text-foreground">JSON Util</h1>
         <span className="text-xs text-muted-foreground ml-1">
           — paste, format, explore
         </span>
