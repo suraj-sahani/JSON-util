@@ -6,4 +6,4 @@ export const SAMPLE_JSON = `{"name": "JSON Formatter",
   "config": {"theme": "minimal","maxDepth": null,"enabled": true}
 }`;
 
-export const INDENT_OPTIONS = [2, 3, 4, 8] as const;
+export const INDENT_OPTIONS = [2, 4, 6, 8] as const;

@@ -145,7 +145,7 @@
     --editor-bg: oklch(0.2308 0 0);
     --editor-gutter: oklch(0.2893 0 0);
     --editor-line-number: oklch(71.54% 0.0152 268.44);
-    --editor-highlight: oklch(96.21% 0.0568 95.34);
+    --editor-highlight: oklch(0.8425 0.0015 90.38 / 24.8%);
     --editor-match: oklch(86.52% 0.1768 90.38);
 
     --json-key: oklch(0.8195 0.0977 262.31);

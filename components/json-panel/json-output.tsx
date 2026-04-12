@@ -13,15 +13,11 @@ import { Button } from "../ui/button";
 import { JsonNode } from "./node";
 import { SearchBar } from "./searchbar";
 
-interface JsonOutputPanelProps {
-  data: unknown;
-  error: string | null;
-}
+export const JsonOutputPanel = () => {
+  const output = useJSONStore((state) => state.output);
+  const error = useJSONStore((state) => state.error);
+  const indent = useJSONStore((state) => stat)
 
-export const JsonOutputPanel: React.FC<JsonOutputPanelProps> = ({
-  data,
-  error,
-}) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentMatch, setCurrentMatch] = useState(0);
@@ -31,9 +27,9 @@ export const JsonOutputPanel: React.FC<JsonOutputPanelProps> = ({
   const lineNumberRef = useRef<HTMLDivElement>(null);
 
   const totalLines = useMemo(() => {
-    if (error || data === undefined) return 0;
-    return countJsonLines(data);
-  }, [data, error]);
+    if (error || output === undefined) return 0;
+    return countJsonLines(output);
+  }, [output, error]);
 
   const formattedText = useMemo(() => {
     if (error || data === undefined) return "";
