@@ -1,18 +1,18 @@
+"use client";
 import { CheckmarkSquare03Icon, Copy02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SearchBar } from "./searchbar";
 import { Button } from "../ui/button";
+import { useJSONStore } from "@/lib/store";
 
-interface JsonInputPanelProps {
-  value: string;
-  onChange: (v: string) => void;
-}
+export const JsonInputPanel = () => {
+  const input = useJSONStore((state) => state.input);
+  const indent = useJSONStore((state) => state.indent);
+  const setInput = useJSONStore((state) => state.setInput);
+  const setError = useJSONStore((state) => state.setError);
+  const setOutput = useJSONStore((state) => state.setOutput);
 
-export const JsonInputPanel: React.FC<JsonInputPanelProps> = ({
-  value,
-  onChange,
-}) => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentMatch, setCurrentMatch] = useState(0);
@@ -21,7 +21,7 @@ export const JsonInputPanel: React.FC<JsonInputPanelProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const lineNumberRef = useRef<HTMLDivElement>(null);
 
-  const lines = value.split("\n");
+  const lines = input.split("\n");
   const lineCount = lines.length;
 
   const matches = useMemo(() => {
@@ -74,9 +74,31 @@ export const JsonInputPanel: React.FC<JsonInputPanelProps> = ({
   };
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(value);
+    await navigator.clipboard.writeText(input);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
+  };
+
+  // --- NEW: Paste Handler ---
+  const handlePaste = () => {
+    // We use setTimeout 0 to wait for the 'onChange' to finish and the
+    // textarea value to be updated with the pasted content.
+    setTimeout(() => {
+      const currentVal = textareaRef.current?.value || "";
+      try {
+        if (currentVal.trim() === "") return;
+
+        const parsed = JSON.parse(currentVal);
+        // If parsing succeeds, we automatically update the output
+        const indentedJSON = JSON.stringify(parsed, null, indent);
+
+        setOutput(JSON.parse(indentedJSON));
+        setError(null);
+      } catch (err) {
+        // If it's a paste but invalid JSON, show the error
+        setError((err as Error).message);
+      }
+    }, 0);
   };
 
   return (
@@ -158,9 +180,12 @@ export const JsonInputPanel: React.FC<JsonInputPanelProps> = ({
         </div>
         <textarea
           ref={textareaRef}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
+          value={input}
+          onChange={(e) => {
+            setInput(e.target.value);
+          }}
           onScroll={handleScroll}
+          onPaste={handlePaste}
           spellCheck={false}
           className="flex-1 resize-none bg-editor-bg p-2 font-mono text-xs leading-5 text-foreground outline-none"
           placeholder="Paste your JSON here..."

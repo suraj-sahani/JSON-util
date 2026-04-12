@@ -10,6 +10,7 @@ interface JsonNodeProps {
   data: unknown;
   keyName?: string;
   depth: number;
+  indent: number;
   startLine: number;
   searchQuery: string;
   currentMatchLine: number | null;
@@ -21,6 +22,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
   data,
   keyName,
   depth,
+  indent,
   startLine,
   searchQuery,
   currentMatchLine,
@@ -71,7 +73,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
     return (
       <div className="flex items-center gap-0.5 leading-5">
         <Button
-          value={"ghost"}
+          variant={"ghost"}
           size={"icon-xs"}
           onClick={() => setCollapsed(false)}
           className="inline-flex items-center bg-transparent rounded p-0.5 hover:bg-accent"
@@ -120,7 +122,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
         <KeyPrefix keyName={keyName} searchQuery={searchQuery} />
         <span className="text-json-bracket">{openBracket}</span>
       </div>
-      <div className="pl-5">
+      <div style={{ paddingLeft: `${indent}ch` }}>
         {entries.map(([key, val], idx) => {
           const childStartLine = currentLine;
           const childLineCount = countJsonLines(val);
@@ -132,6 +134,7 @@ export const JsonNode: React.FC<JsonNodeProps> = ({
               data={val}
               keyName={isArray ? undefined : key}
               depth={depth + 1}
+              indent={indent}
               startLine={childStartLine}
               searchQuery={searchQuery}
               currentMatchLine={currentMatchLine}

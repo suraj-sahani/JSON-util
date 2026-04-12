@@ -5,7 +5,7 @@ import { SAMPLE_JSON } from "./constants";
 type JSONStoreState = {
   input: string;
   indent: number;
-  output: string;
+  output: unknown;
   error: string | null;
 };
 
@@ -53,7 +53,7 @@ export const useJSONStore = create<JSONStore>()(
               : newIndent,
         }));
       },
-      output: "",
+      output: JSON.parse(SAMPLE_JSON),
       setOutput: (newOutput) => {
         set((state) => ({
           output:

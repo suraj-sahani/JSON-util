@@ -1,4 +1,6 @@
 "use client";
+import { INDENT_OPTIONS } from "@/lib/constants";
+import { useJSONStore } from "@/lib/store";
 import {
   ArrowShrink01Icon,
   Delete02Icon,
@@ -8,44 +10,48 @@ import {
   Upload01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
-import { INDENT_OPTIONS } from "@/lib/constants";
-import { Button } from "./ui/button";
+import { useCallback } from "react";
 import { ThemeToggle } from "./theme-toggle";
-import { useJSONStore } from "@/lib/store";
-import { useCallback, useMemo } from "react";
+import { Button } from "./ui/button";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 
 export default function Header() {
   const input = useJSONStore((state) => state.input);
   const setInput = useJSONStore((state) => state.setInput);
+  const output = useJSONStore((state) => state.output);
+  const setOutput = useJSONStore((state) => state.setOutput);
   const indent = useJSONStore((state) => state.indent);
   const setIndent = useJSONStore((state) => state.setIndent);
-
-  const { data, error } = useMemo(() => {
-    if (!input.trim()) return { data: undefined, error: null };
-    try {
-      const parsedInput = JSON.parse(input);
-      const formattedIput = JSON.stringify(parsedInput, null, indent);
-      return { data: JSON.parse(formattedIput), error: null };
-    } catch (e) {
-      return { data: undefined, error: (e as Error).message };
-    }
-  }, [input, indent]);
+  const setError = useJSONStore((state) => state.setError);
 
   const handleFormat = useCallback(() => {
-    if (data !== undefined) {
-      setInput(JSON.stringify(data, null, indent));
+    try {
+      if (!input) return;
+      const json = JSON.parse(input);
+      const indentedJSON = JSON.stringify(json, null, indent);
+      setOutput(JSON.parse(indentedJSON));
+    } catch (e) {
+      setError((e as Error).message);
     }
-  }, [data, indent]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [input, indent]);
 
   const handleMinify = useCallback(() => {
-    if (data !== undefined) {
-      setInput(JSON.stringify(data));
+    if (output) {
+      const minifiedJSON = JSON.stringify(output);
+      console.dir({
+        minifiedJSON,
+        output,
+      });
+      setOutput(JSON.stringify(output, null));
     }
-  }, [data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [output]);
 
   const handleClear = useCallback(() => {
     setInput("");
+    setOutput(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

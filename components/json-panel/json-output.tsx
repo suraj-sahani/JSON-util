@@ -1,3 +1,4 @@
+"use client";
 import { HugeiconsIcon } from "@hugeicons/react";
 import React, {
   useCallback,
@@ -7,6 +8,7 @@ import React, {
   useState,
 } from "react";
 
+import { useJSONStore } from "@/lib/store";
 import { countJsonLines } from "@/lib/utils";
 import { CheckmarkSquare03Icon, Copy02Icon } from "@hugeicons/core-free-icons";
 import { Button } from "../ui/button";
@@ -15,8 +17,8 @@ import { SearchBar } from "./searchbar";
 
 export const JsonOutputPanel = () => {
   const output = useJSONStore((state) => state.output);
+  const indent = useJSONStore((state) => state.indent);
   const error = useJSONStore((state) => state.error);
-  const indent = useJSONStore((state) => stat)
 
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,9 +34,9 @@ export const JsonOutputPanel = () => {
   }, [output, error]);
 
   const formattedText = useMemo(() => {
-    if (error || data === undefined) return "";
-    return JSON.stringify(data, null, 2);
-  }, [data, error]);
+    if (error || !output) return "";
+    return JSON.stringify(output, null, indent);
+  }, [output, error, indent]);
 
   const formattedLines = useMemo(
     () => formattedText.split("\n"),
@@ -147,7 +149,7 @@ export const JsonOutputPanel = () => {
             </p>
           </div>
         </div>
-      ) : data === undefined ? (
+      ) : !output ? (
         <div className="flex flex-1 items-center justify-center p-8">
           <p className="text-sm text-muted-foreground">
             Paste JSON on the left to see formatted output
@@ -183,8 +185,9 @@ export const JsonOutputPanel = () => {
             onScroll={handleScroll}
           >
             <JsonNode
-              data={data}
+              data={output}
               depth={0}
+              indent={indent}
               startLine={0}
               searchQuery={searchQuery}
               currentMatchLine={
