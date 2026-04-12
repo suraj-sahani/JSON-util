@@ -82,11 +82,11 @@ export const JsonInputPanel: React.FC<JsonInputPanelProps> = ({
   return (
     <div
       ref={containerRef}
-      className="relative flex h-full flex-col overflow-hidden rounded-lg border bg-card"
+      className="relative flex h-full flex-col overflow-hidden rounded-xl border-2 bg-card"
       onKeyDown={handleKeyDown}
       tabIndex={-1}
     >
-      <div className="flex items-center justify-between border-b bg-muted/50 px-4 py-2">
+      <div className="flex items-center justify-between border-b-2 bg-muted/50 px-4 py-2">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
           Input
         </span>
@@ -136,9 +136,9 @@ export const JsonInputPanel: React.FC<JsonInputPanelProps> = ({
       <div className="flex flex-1 overflow-hidden">
         <div
           ref={lineNumberRef}
-          className="shrink-0 overflow-hidden bg-editor-gutter select-none border-r px-2 py-2 text-center"
+          className="shrink-0 overflow-hidden bg-editor-gutter select-none border-r-2 px-2 py-2 text-center"
           style={{
-            width: `${Math.max(3, String(lineCount).length) * 0.6 + 1.2}rem`,
+            width: `${Math.max(2, String(lineCount).length) * 0.6 + 1.2}rem`,
           }}
         >
           {lines.map((_, i) => (
