@@ -39,11 +39,7 @@ export default function Header() {
 
   const handleMinify = useCallback(() => {
     if (output) {
-      const minifiedJSON = JSON.stringify(output);
-      console.dir({
-        minifiedJSON,
-        output,
-      });
+      if (typeof output === "string") return;
       setOutput(JSON.stringify(output, null));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
